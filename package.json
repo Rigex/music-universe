@@ -1,7 +1,7 @@
 {
   "name": "music-universe",
   "version": "1.0.0",
-  "description": "Music player with visualization",
+  "description": "Music player with visualization https://pro100wolf.github.io/music-universe/",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
