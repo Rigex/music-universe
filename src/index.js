@@ -6,7 +6,7 @@ import MusicLibrary from './components/music-library/music-library';
 import tracks from './components/player/tracks';
 import './style.styl';
 
-(() => {
+window.onload = () => {
   const musicPlayer = new Player(tracks);
   new SvgPlayer(musicPlayer); // eslint-disable-line no-new
   new Visualizer(1200, 100, musicPlayer); // eslint-disable-line no-new
@@ -39,4 +39,4 @@ import './style.styl';
   playerBtn.eject.addEventListener('click', () => {
     musicLibrary.open();
   });
-})();
+};
