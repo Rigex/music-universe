@@ -19,6 +19,10 @@ class Player {
 
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     this.audioSrc = this.audioCtx.createMediaElementSource(this.element);
+
+    this.element.addEventListener('ended', () => {
+      this.setTrack(this.currentTrack + 1, false);
+    });
   }
 
   play() {
@@ -31,17 +35,19 @@ class Player {
     document.dispatchEvent(new CustomEvent('pauseTrack'));
   }
 
-  setTrack(trackId) {
-    if (trackId >= 0 && trackId < this.tracks.length) {
-      this.pause();
-      this.currentTrack = trackId;
-      this.element.src = window.location + this.tracks[this.currentTrack];
+  setTrack(trackId, pauseBeforeNextTrack = true) {
+    if (trackId >= 0) {
+      if (pauseBeforeNextTrack || trackId === this.tracks.length) {
+        this.pause();
+      }
 
+      this.currentTrack = (trackId < this.tracks.length) ? trackId : 0;
+      this.element.src = window.location + this.tracks[this.currentTrack];
 
       clearInterval(this.delay);
       this.delay = setTimeout(() => {
         this.play();
-      }, 1000);
+      }, 1500);
 
       const setTrackEvent = new CustomEvent('setTrack', {
         detail: { track: this.currentTrack }
