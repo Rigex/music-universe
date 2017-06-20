@@ -4,6 +4,7 @@ import Visualizer from './components/visualizer/visualizer';
 import MusicLibrary from './components/music-library/music-library';
 
 import tracks from './components/player/tracks';
+import './components/footer/footer';
 import './style.styl';
 
 window.onload = () => {
