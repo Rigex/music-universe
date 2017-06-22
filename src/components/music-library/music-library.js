@@ -1,6 +1,7 @@
 import jsmediatags from 'jsmediatags/dist/jsmediatags';
 
 import './music-library.styl';
+import svgLoader from '../../assets/loader.svg';
 
 class Slider {
   constructor(itemsInfo, playTrack) {
@@ -97,15 +98,22 @@ class MusicLibrary {
   constructor(elemSelector, player) {
     this.element = document.querySelector(elemSelector);
     this.player = player;
-    MusicLibrary.getTracksInfo(this.player.tracks)
-    .then(
-      (result) => {
-        this.init(result);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    this.loader = this.element.querySelector('.music-library__loader');
+
+    this.loader.classList.add('music-library__loader--active');
+    this.loader.style.backgroundImage = `url('${svgLoader}')`;
+    setTimeout(() => {
+      MusicLibrary.getTracksInfo(this.player.tracks)
+      .then(
+        (result) => {
+          this.init(result);
+          this.loader.classList.remove('music-library__loader--active');
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    }, 2000);
   }
 
   init(tracksInfo) {
