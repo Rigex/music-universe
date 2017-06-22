@@ -10,7 +10,7 @@ import './style.styl';
 window.onload = () => {
   const musicPlayer = new Player(tracks);
   new SvgPlayer(musicPlayer); // eslint-disable-line no-new
-  new Visualizer(1200, 100, musicPlayer); // eslint-disable-line no-new
+  new Visualizer(0.8, 100, musicPlayer); // eslint-disable-line no-new
   const musicLibrary = new MusicLibrary('#music-library', musicPlayer);
 
   const playerBtn = {

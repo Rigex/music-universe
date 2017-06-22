@@ -5,8 +5,8 @@ import './visualizer.styl';
 import backgroundImg from '../../assets/visualizer-bg.jpg';
 
 class Visualizer {
-  constructor(radius, frequency, player) {
-    this.configRadius = radius;
+  constructor(radiusRatio, frequency, player) {
+    this.radiusRatio = radiusRatio;
     this.frequency = frequency;
     this.player = player;
 
@@ -26,23 +26,14 @@ class Visualizer {
     this.angle = d3.scaleTime()
         .range([0, 2 * Math.PI]);
 
-    this.radius = d3.scaleLinear()
-        .range([0, (this.configRadius / 2) - 10]);
+    this.canvas = document.querySelector('.visualizer');
+    this.ctx = this.canvas.getContext('2d');
 
-    this.area = d3.radialLine()
-        .angle(d => this.angle(d.index))
-        .radius(d => this.radius(d.value))
-        .curve(d3.curveCardinalClosed);
+    this.setVisualizerSize(window.innerWidth, window.innerHeight);
 
-    this.canvas = d3.select('.visualizer')
-        .attr('width', window.innerWidth)
-        .attr('height', window.innerHeight);
-
-    this.canvasWidth = this.canvas.node().width;
-    this.canvasHeight = this.canvas.node().height;
-
-    this.ctx = this.canvas.node().getContext('2d');
-    this.ctx.translate(this.canvasWidth / 2, this.canvasHeight / 2);
+    window.addEventListener('resize', () => {
+      this.setVisualizerSize(window.innerWidth, window.innerHeight);
+    });
 
     this.bgImg = new Image();
     this.bgImg.src = backgroundImg;
@@ -64,6 +55,26 @@ class Visualizer {
     return result;
   }
 
+  setVisualizerSize(width, height) {
+    this.canvasWidth = width;
+    this.canvasHeight = height;
+    this.canvas.width = this.canvasWidth;
+    this.canvas.height = this.canvasHeight;
+    this.ctx.translate(this.canvasWidth / 2, this.canvasHeight / 2);
+
+    this.configRadius = width * this.radiusRatio;
+    console.log(width, this.configRadius);
+    this.radius = d3.scaleLinear()
+        .range([0, (this.configRadius / 2) - 10]);
+
+    this.area = d3.radialLine()
+        .angle(d => this.angle(d.index))
+        .radius(d => this.radius(d.value))
+        .curve(d3.curveCardinalClosed);
+
+    this.visualizerElementsOffset = (this.configRadius / 2) - ((width - this.configRadius) / 2);
+  }
+
   render() {
     const frequencyData = new Uint8Array(this.frequency);
 
@@ -82,10 +93,11 @@ class Visualizer {
       const m = document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGMatrix();
       m.a = 1; m.b = 0;
       m.c = 0; m.d = 1;
-      m.e = 500; m.f = 0;
+      m.e = this.visualizerElementsOffset;
+      m.f = 0;
 
       p.addPath(p2, m);
-      m.e = -500;
+      m.e = -this.visualizerElementsOffset;
       p.addPath(p3, m);
     }
 
@@ -108,7 +120,7 @@ class Visualizer {
         this.canvasHeight
       );
       this.render();
-    }, this.canvas.node());
+    }, this.canvas);
 
     // stop animation if all frequency levels = 0
     if (this.player.isPaused) {
