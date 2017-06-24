@@ -110,7 +110,7 @@ class MusicLibrary {
           this.loader.classList.remove('music-library__loader--active');
         },
         (err) => {
-          console.log(err);
+          console.error(err);
         }
       );
     }, 2000);

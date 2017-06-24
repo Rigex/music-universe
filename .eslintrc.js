@@ -15,6 +15,7 @@ module.exports = {
     },
     'rules': {
       'comma-dangle': 0,
-      'eol-last': 0
+      'eol-last': 0,
+      'no-console': [1, { allow: ["warn", "error"] }]
     }
 };

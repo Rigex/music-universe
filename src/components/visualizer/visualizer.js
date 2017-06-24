@@ -62,17 +62,17 @@ class Visualizer {
     this.canvas.height = this.canvasHeight;
     this.ctx.translate(this.canvasWidth / 2, this.canvasHeight / 2);
 
-    this.configRadius = width * this.radiusRatio;
-    console.log(width, this.configRadius);
+    this.configRadius = ((width + height) / 2) * this.radiusRatio;
     this.radius = d3.scaleLinear()
-        .range([0, (this.configRadius / 2) - 10]);
+        .range([0, this.configRadius / 2]);
 
     this.area = d3.radialLine()
         .angle(d => this.angle(d.index))
         .radius(d => this.radius(d.value))
         .curve(d3.curveCardinalClosed);
 
-    this.visualizerElementsOffset = (this.configRadius / 2) - ((width - this.configRadius) / 2);
+    this.elemOffset = (((width + height) / 2) - this.configRadius) / 2;
+    this.elemOffset = (this.configRadius / 2) - this.elemOffset;
   }
 
   render() {
@@ -93,11 +93,11 @@ class Visualizer {
       const m = document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGMatrix();
       m.a = 1; m.b = 0;
       m.c = 0; m.d = 1;
-      m.e = this.visualizerElementsOffset;
+      m.e = this.elemOffset;
       m.f = 0;
 
       p.addPath(p2, m);
-      m.e = -this.visualizerElementsOffset;
+      m.e = -this.elemOffset;
       p.addPath(p3, m);
     }
 
